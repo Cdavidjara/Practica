@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Registro</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #0c8ef8;
+            margin: 0;
+            padding: 0;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-top: 20px;
+        }
+
+        form {
+            background-color: #fff;
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        input[type="text"]:focus,
+        input[type="date"]:focus,
+        input[type="number"]:focus,
+        input[type="email"]:focus,
+        input[type="password"]:focus {
+            border-color: #007BFF;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+        }
+
+        .error {
+            color: red;
+            font-size: 14px;
+            margin-top: -15px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        button[type="submit"] {
+            background-color: #09b5e9;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h2>Formulario de Registro</h2>
+    <form id="registroForm" action="guardar_usuario.php" method="POST">
+        <label for="nombres">Nombres:</label>
+        <input type="text" id="nombres" name="nombres">
+        <span id="nombresError" class="error"></span>
+
+        <label for="apellidos">Apellidos:</label>
+        <input type="text" id="apellidos" name="apellidos">
+        <span id="apellidosError" class="error"></span>
+
+        <label for="cedulaRUC">Cédula-RUC:</label>
+        <input type="text" id="cedulaRUC" name="cedulaRUC">
+        <span id="cedulaRUCError" class="error"></span>
+
+        <label for="telefono">Teléfono:</label>
+        <input type="text" id="telefono" name="telefono">
+        <span id="telefonoError" class="error"></span>
+
+        <label for="fechaNacimiento">Fecha de Nacimiento:</label>
+        <input type="date" id="fechaNacimiento" name="fechaNacimiento">
+        <span id="fechaNacimientoError" class="error"></span>
+
+        <label for="salario">Salario:</label>
+        <input type="number" id="salario" name="salario" min="460">
+        <span id="salarioError" class="error"></span>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
+        <span id="emailError" class="error"></span>
+
+        <label for="contrasena">Contraseña:</label>
+        <input type="password" id="contrasena" name="contrasena">
+        <span id="contrasenaError" class="error"></span>
+
+        <button type="submit">Registrar</button>
+    </form>
+    <script>
+        document.getElementById('registroForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Evitar el envío del formulario
+
+            // Limpiar mensajes de error
+            document.querySelectorAll('.error').forEach(function(el) {
+                el.textContent = '';
+            });
+
+            let isValid = true;
+
+            // Validación de Nombres
+            const nombres = document.getElementById('nombres').value;
+            if (nombres.trim() === '' || !/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/.test(nombres)) {
+                document.getElementById('nombresError').textContent = 'Ingrese nombres válidos (solo letras).';
+                isValid = false;
+            }
+
+            // Validación de Apellidos
+            const apellidos = document.getElementById('apellidos').value;
+            if (apellidos.trim() === '' || !/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/.test(apellidos)) {
+                document.getElementById('apellidosError').textContent = 'Ingrese apellidos válidos (solo letras).';
+                isValid = false;
+            }
+
+            // Validación de Cédula-RUC
+            const cedulaRUC = document.getElementById('cedulaRUC').value;
+            if (cedulaRUC.trim() === '' || (!/^\d{10}$/.test(cedulaRUC) && !/^\d{13}$/.test(cedulaRUC))) {
+                document.getElementById('cedulaRUCError').textContent = 'Ingrese una cédula o RUC válido (10 o 13 dígitos).';
+                isValid = false;
+            }
+
+            // Validación de Teléfono
+            const telefono = document.getElementById('telefono').value;
+            if (telefono.trim() === '' || telefono.length !== 10 || !/^\d{10}$/.test(telefono)) {
+                document.getElementById('telefonoError').textContent = 'Ingrese un número de teléfono válido (10 dígitos).';
+                isValid = false;
+            }
+
+            // Validación de Fecha de Nacimiento
+            const fechaNacimiento = document.getElementById('fechaNacimiento').value;
+            const fechaMin = new Date('1900-01-01');
+            const fechaMax = new Date();
+            const fechaIngresada = new Date(fechaNacimiento);
+            if (!fechaNacimiento || fechaIngresada < fechaMin || fechaIngresada > fechaMax) {
+                document.getElementById('fechaNacimientoError').textContent = 'Ingrese una fecha de nacimiento válida (01/01/1900 - hoy).';
+                isValid = false;
+            }
+
+            // Validación de Salario
+            const salario = document.getElementById('salario').value;
+            if (salario.trim() === '' || salario < 460) {
+                document.getElementById('salarioError').textContent = 'Ingrese un salario mínimo de $460.';
+                isValid = false;
+            }
+
+            // Validación de Email
+            const email = document.getElementById('email').value;
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (email.trim() === '' || !emailPattern.test(email)) {
+                document.getElementById('emailError').textContent = 'Ingrese una dirección de correo válida.';
+                isValid = false;
+            }
+
+            // Validación de Contraseña
+            const contrasena = document.getElementById('contrasena').value;
+            const contrasenaPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{6,12}$/;
+            if (contrasena.trim() === '' || !contrasenaPattern.test(contrasena)) {
+                document.getElementById('contrasenaError').textContent = 'Ingrese una contraseña válida (6-12 caracteres, incluyendo mayúsculas, minúsculas, números y al menos un carácter especial).';
+                isValid = false;
+            }
+
+            if (isValid) {
+                alert('Formulario enviado con éxito.');
+                this.submit(); // Enviar el formulario si todos los campos son válidos
+            }
+        });
+
+        // Validación en tiempo real para Nombres y Apellidos
+        document.getElementById('nombres').addEventListener('input', function(event) {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
+            if (!/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/.test(this.value)) {
+                document.getElementById('nombresError').textContent = 'Ingrese nombres válidos (solo letras).';
+            } else {
+                document.getElementById('nombresError').textContent = '';
+            }
+        });
+
+        document.getElementById('apellidos').addEventListener('input', function(event) {
+            this.value = this.value.replace(/[^a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]/g, '');
+            if (!/^[a-zA-ZáéíóúüñÁÉÍÓÚÜÑ\s]+$/.test(this.value)) {
+                document.getElementById('apellidosError').textContent = 'Ingrese apellidos válidos (solo letras).';
+            } else {
+                document.getElementById('apellidosError').textContent = '';
+            }
+        });
+
+        // Limpia cualquier carácter que no sea número en Cédula-RUC y Teléfono
+        document.getElementById('cedulaRUC').addEventListener('input', function(event) {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 13) {
+                this.value = this.value.slice(0, 13);
+            }
+        });
+
+        document.getElementById('telefono').addEventListener('input', function(event) {
+            this.value = this.value.replace(/\D/g, '');
+            if (this.value.length > 10) {
+                this.value = this.value.slice(0, 10);
+            }
+        });
+    </script>
+</body>
+</html>
